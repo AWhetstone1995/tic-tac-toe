@@ -7,18 +7,6 @@ class Player
   end
 
   def play
-    # puts "#{name}, please choose an available tile from this board."
-    # number = gets.chomp.to_i - 1
-    # loop do
-    #   if number.is_a? Integer
-    #     break
-    #   elsif number.negative? || number > 8
-    #     'Not a tile on this board, try again.'
-    #   else 'Not a tile on this board, try again.'
-    #   end
-    #   number = gets.chomp.to_i
-    # end
-    # number
     number = gets.chomp.to_i - 1
     loop do
       if number.is_a? Integer
@@ -34,10 +22,12 @@ class Player
 end
 
 class Game
-  attr_accessor :board
+  attr_accessor :winner, :winning_player, :board
   attr_reader :player1, :player2
 
   def initialize(player1, player2)
+    @winning_player = ""
+    @winner = false
     @player1 = player1
     @player2 = player2
     @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -54,45 +44,41 @@ class Game
     puts "#{board[6]} | #{board[7]} | #{board[8]}"
   end
 
-  def winner?; end
-
-  def play_game
-    winner = false
-    while winner == false
-      # player1_play
-      choose(@player1)
-      print_board
-      # player2_play
-      choose(@player2)
-      print_board
-    end
+  def reset
+    @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    self.winner = false
+    @bool_array = [false, false, false,
+                   false, false, false,
+                   false, false, false]
   end
 
-  # def player1_play
-  #   puts "#{player1}, choose your next move from an available tile."
-  #   choice = gets.chomp.to_i - 1
-  #   loop do
-  #     if choice < 0 || choice > 8
-  #       puts 'Not a tile on this board, please try again.'
-  #     # elsif choice < 1 && choice > 9
-  #     #   puts 'Not a tile on this board, please try again.'
-  #     elsif @bool_array[choice] == true
-  #       puts 'Tile taken, please try again.'
-  #     else
-  #       break
-  #     end
-  #     choice = gets.chomp.to_i - 1
-  #   end
-  #   @board[choice] = 'X'
-  #   @bool_array[choice] = true
-  # end
-
-  # def player2_play
-  #   puts "#{player2}, choose your next move from an available tile."
-  #   choice = gets.chomp.to_i - 1
-  #   @board[choice] = 'O'
-  #   @bool_array[choice] = true
-  # end
+  def play_game
+    print_board
+    while winner == false
+      choose(@player1)
+      print_board
+      winner?
+      if winner == true
+        self.winning_player = @player1.name
+        break
+      end
+      choose(@player2)
+      print_board
+      winner?
+      if winner == true
+        self.winning_player = @player2.name
+      end
+    end
+    puts "Nice cringe victory, #{@winning_player}..."
+    puts 'Play again? (Y/N)'
+    choice = gets.chomp.downcase
+    if choice == 'y'
+      reset
+      play_game
+    else
+      puts 'Bye'
+    end
+  end
 
   def choose(player)
     puts "#{player.name}, choose your next move from an available tile."
@@ -110,6 +96,39 @@ class Game
     @board[choice] = player.marker
     @bool_array[choice] = true
   end
+
+  def winner?
+    check_horizontal
+    check_vertical
+    check_diagonal
+  end
+
+  def check_horizontal
+    for i in [1,4,7]
+      if board[i - 1] == board[i] && board[i] == board[i + 1]
+        self.winner = true
+        break
+      end
+    end
+  end
+
+  def check_vertical
+    for i in [3,4,5]
+      if board[i - 3] == board[i] && board[i] == board[i + 3]
+        self.winner = true
+        break
+      end
+    end
+  end
+
+  def check_diagonal
+    for i in [2,4]
+      if board[4 - i] == board[4] && board[4] == board[4 + i]
+        self.winner = true
+        break
+      end
+    end
+  end
 end
 
 puts 'Player 1, what is your name?'
@@ -126,5 +145,4 @@ player2 = Player.new(name2, marker2)
 
 game = Game.new(player1, player2)
 
-game.print_board
 game.play_game
