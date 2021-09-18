@@ -75,7 +75,7 @@ class Game
       reset
       play_game
     else
-      puts 'Bye'
+      puts 'Bye, thanks for playing.'
     end
   end
 
