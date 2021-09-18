@@ -1,10 +1,20 @@
 class Player
-  attr_accessor :name, :marker
+  attr_reader :name, :marker
 
-  def initialize(name, marker)
-    @name = name
-    @marker = marker
+  def initialize(player_number)
+    build_player(player_number)
   end
+
+  private
+
+  def build_player(number)
+    puts "Player #{number}, what is your name?"
+    @name = gets.chomp
+    puts "#{name}, what would you like to use as your marker?"
+    @marker = gets.chomp
+  end
+
+  public
 
   def play
     number = gets.chomp.to_i - 1
@@ -22,11 +32,11 @@ class Game
   attr_accessor :winner, :winning_player, :board
   attr_reader :player1, :player2
 
-  def initialize(player1, player2)
+  def initialize
     @winning_player = ''
     @winner = false
-    @player1 = player1
-    @player2 = player2
+    @player1 = Player.new(1)
+    @player2 = Player.new(2)
     @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     @bool_array = [false, false, false,
                    false, false, false,
@@ -129,18 +139,6 @@ class Game
   end
 end
 
-puts 'Player 1, what is your name?'
-name1 = gets.chomp
-puts "#{name1}, what would you like your symbol to be?"
-marker1 = gets.chomp
-player1 = Player.new(name1, marker1)
-
-puts 'Player 2, what is your name?'
-name2 = gets.chomp
-puts "#{name2}, what would you like your symbol to be?"
-marker2 = gets.chomp
-player2 = Player.new(name2, marker2)
-
-game = Game.new(player1, player2)
+game = Game.new
 
 game.play_game
