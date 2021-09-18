@@ -52,14 +52,14 @@ class Game
   def play_game
     print_board
     while winner == false
-      choose(@player1)
+      choose(player1)
       print_board
       winner?
       if winner == true
         self.winning_player = @player1.name
         break
       end
-      choose(@player2)
+      choose(player2)
       print_board
       winner?
       self.winning_player = @player2.name if winner == true
