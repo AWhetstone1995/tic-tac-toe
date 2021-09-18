@@ -9,12 +9,9 @@ class Player
   def play
     number = gets.chomp.to_i - 1
     loop do
-      if number.is_a? Integer
-        break
-      else
-        'Not a tile on this board, try again.'
-      end
+      break if number.is_a? Integer
 
+      puts 'Not a tile on this board, try again.'
       number = gets.chomp.to_i - 1
     end
     number
@@ -26,7 +23,7 @@ class Game
   attr_reader :player1, :player2
 
   def initialize(player1, player2)
-    @winning_player = ""
+    @winning_player = ''
     @winner = false
     @player1 = player1
     @player2 = player2
@@ -65,11 +62,13 @@ class Game
       choose(@player2)
       print_board
       winner?
-      if winner == true
-        self.winning_player = @player2.name
-      end
+      self.winning_player = @player2.name if winner == true
     end
-    puts "Nice cringe victory, #{@winning_player}..."
+    game_end
+  end
+
+  def game_end
+    puts "Nice victory, #{@winning_player}..."
     puts 'Play again? (Y/N)'
     choice = gets.chomp.downcase
     if choice == 'y'
@@ -86,11 +85,10 @@ class Game
     loop do
       if choice.negative? || choice > 8
         puts 'Not a tile on this board, try again.'
-      elsif @bool_array[choice] == true
+      elsif @bool_array[choice]
         puts 'Tile taken, please try again.'
       else break
       end
-
       choice = player.play
     end
     @board[choice] = player.marker
